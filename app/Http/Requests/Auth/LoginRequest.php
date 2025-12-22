@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -41,13 +43,29 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // Cari User berdasarkan Email
+        $user = User::where('email', $this->email)->first();
+
+        // Jika User TIDAK KETEMU -> Kirim Error ke kolom Email
+        if (! $user) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Email ini belum terdaftar di sistem kami.',
             ]);
         }
+
+        // Jika User Ketemu, TAPI Password Salah -> Kirim Error ke kolom Password
+        if (! Hash::check($this->password, $user->password)) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'password' => 'Password yang Anda masukkan salah.',
+            ]);
+        }
+
+        // 4. Jika Email Ada & Password Benar -> Login
+        Auth::login($user, $this->boolean('remember'));
 
         RateLimiter::clear($this->throttleKey());
     }

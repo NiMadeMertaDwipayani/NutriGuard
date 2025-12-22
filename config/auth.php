@@ -40,6 +40,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // KITA UBAH INI JADI JWT
+        'api' => [
+            'driver' => 'jwt', 
+            'provider' => 'users',
+        ],
     ],
 
     /*

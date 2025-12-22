@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+// TAMBAHAN 1: Import Interface JWT
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+
+// TAMBAHAN 2: Tambahkan "implements JWTSubject"
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -21,6 +25,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',   // Kode Anda Tetap Aman
+        'avatar', // Kode Anda Tetap Aman
     ];
 
     /**
@@ -44,5 +50,24 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relasi: User memiliki Banyak Penyakit (Kode Anda Tetap Aman)
+    public function diseases()
+    {
+        return $this->belongsToMany(Disease::class);
+    }
+
+    // TAMBAHAN 3: Dua Method Wajib untuk JWT
+    // (Simpan di paling bawah sebelum kurung tutup terakhir)
+    
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

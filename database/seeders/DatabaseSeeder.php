@@ -21,5 +21,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // kode tambahan
+        $this->call(UserSeeder::class);
     }
 }

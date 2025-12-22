@@ -27,7 +27,15 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
+        
+        // --- LOGIKA PINTAR NUTRIGUARD (tambahan) ---
+        // JIKA ADMIN -> KE DASHBOARD ADMIN
+        if ($request->user()->role === 'admin') {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+        // --------------------------------
+        
+        //JIKA USER -> KE DASHBOARD BIASA
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
