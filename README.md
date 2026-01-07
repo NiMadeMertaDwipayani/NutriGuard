@@ -2,11 +2,11 @@
 
 **Your Personal Food Safety Assistant**
 
-NutriGuard is a web-based platform designed to assist users in managing food safety and nutrition information. This project demonstrates a modern implementation of a **RESTful API** backend using **Laravel 11**, featuring secure authentication and robust data management.
+NutriGuard is a web-based platform designed to assist users in managing food safety and nutrition information. This project demonstrates a modern implementation of a **RESTful API** backend using **Laravel 12**, featuring secure authentication and robust data management.
 
 ## 🚀 Tech Stack
 
-* **Framework:** Laravel 11
+* **Framework:** Laravel 12
 * **Language:** PHP 8.2+
 * **Database:** MySQL
 * **Authentication:** JWT-Auth (`php-open-source-saver/jwt-auth`)
