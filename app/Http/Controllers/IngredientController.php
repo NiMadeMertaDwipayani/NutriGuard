@@ -27,6 +27,10 @@ class IngredientController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:ingredients,name',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi Gambar
+            'calories' => 'required|integer|min:0',
+            'protein' => 'required|numeric|min:0',
+            'carbs' => 'required|numeric|min:0',
+            'fat' => 'required|numeric|min:0',
         ]);
 
         $data = $request->all();
@@ -38,7 +42,15 @@ class IngredientController extends Controller
             $data['image'] = $path;
         }
 
-        Ingredient::create($data);
+        // Simpan ke Database (Update bagian ini)
+        Ingredient::create([
+        'name' => $request->name,
+        'image' => $path, // <--- Perhatikan: Disini pakai $path (sesuai variabel di atas)
+        'calories' => $request->calories,
+        'protein' => $request->protein,
+        'carbs' => $request->carbs,
+        'fat' => $request->fat,
+    ]);
 
         return redirect()->route('admin.ingredients.index')
             ->with('success', 'Bahan Makanan berhasil ditambahkan!');
@@ -56,6 +68,10 @@ class IngredientController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:ingredients,name,' . $ingredient->id,
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'calories' => 'required|integer|min:0',
+            'protein' => 'required|numeric|min:0',
+            'carbs' => 'required|numeric|min:0',
+            'fat' => 'required|numeric|min:0',
         ]);
 
         $data = $request->all();
@@ -70,7 +86,14 @@ class IngredientController extends Controller
             $data['image'] = $path;
         }
 
-        $ingredient->update($data);
+        $ingredient->update([
+            'name' => $request->name,
+            'image' => $path, // <--- Perhatikan: Disini pakai $path (sesuai variabel di atas)
+            'calories' => $request->calories,
+            'protein' => $request->protein,
+            'carbs' => $request->carbs,
+            'fat' => $request->fat,
+        ]);
 
         return redirect()->route('admin.ingredients.index')
             ->with('success', 'Bahan Makanan berhasil diperbarui!');

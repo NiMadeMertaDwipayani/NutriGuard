@@ -7,7 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ingredient extends Model
 {
-    protected $fillable = ['name', 'image'];
+    protected $fillable = [
+        'name', 
+        'image',
+        'calories',
+        'protein',
+        'carbs',
+        'fat',
+    ];
 
     // RELASI MANY-TO-MANY
     // Satu Bahan Makanan bisa jadi pantangan untuk Banyak Penyakit

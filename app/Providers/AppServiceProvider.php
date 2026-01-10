@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use App\Models\Ingredient; // Tambahan
+use App\Observers\IngredientObserver; // Tambahan
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,5 +33,8 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.url')) {
             URL::forceRootUrl(config('app.url'));
         }
+
+        // Nyalakan CCTV
+        Ingredient::observe(IngredientObserver::class);
     }
 }
