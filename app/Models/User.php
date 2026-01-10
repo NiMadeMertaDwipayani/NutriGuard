@@ -59,7 +59,6 @@ class User extends Authenticatable implements JWTSubject
     }
 
     // TAMBAHAN 3: Dua Method Wajib untuk JWT
-    // (Simpan di paling bawah sebelum kurung tutup terakhir)
     
     public function getJWTIdentifier()
     {
