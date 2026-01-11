@@ -1,66 +1,70 @@
-# NutriGuard 🛡️
+# 🥗 NutriGuard - Nutrition & Health Monitoring System
 
-**Your Personal Food Safety Assistant**
+NutriGuard is a *Full Stack* web application designed to help users monitor their daily calorie intake and health conditions, while providing a transparent administration panel for managers.
 
-NutriGuard is a web-based platform designed to assist users in managing food safety and nutrition information. This project demonstrates a modern implementation of a **RESTful API** backend using **Laravel 12**, featuring secure authentication and robust data management.
+This project is a combination of the Midterm Exam assignment (Basic CRUD), the REST API assignment, and the Final Exam Project (Business Logic & Data Visualization).
 
-## 🚀 Tech Stack
+## 🚀 Key Features
 
-* **Framework:** Laravel 12
-* **Language:** PHP 8.2+
+### 👤 User Features
+* **Meal Tracker:** Tracks daily meals with automatic calorie calculation.
+* **Warning System:** Automatic warning triggers if calorie intake exceeds the daily limit.
+* **Data Visualization:**
+    * 📊 **Bar Chart:** Calorie history for the last 7 days.
+    * 🍩 **Doughnut Chart:** Daily nutritional composition (Protein, Carbs, Fat).
+* **Health Profile:** Manages personal medical history data.
+
+### 👮 Admin Features
+* **Ingredient Management:** CRUD (Create, Read, Update, Delete) operations for food ingredients, including photos & nutritional information.
+* **User & Disease Management:** Manages user data and the list of diseases.
+* **🕵️ Activity Log (CCTV):** Records every Create/Update/Delete activity performed on User, Ingredient, and Disease data in *real-time* (Audit Trail).
+
+### 🔌 REST API (Integration)
+The application provides endpoints accessible by third-party applications:
+* `GET /api/ingredients` : Retrieves a list of food ingredients along with their nutritional info.
+* `GET /api/reports?user_id=X` : Retrieves the user's weekly calorie recapitulation in JSON format.
+
+## 🛠️ Tech Stack
+* **Backend:** Laravel 11 (PHP)
+* **Frontend:** Blade Templates & Tailwind CSS
 * **Database:** MySQL
-* **Authentication:** JWT-Auth (`php-open-source-saver/jwt-auth`)
-* **API Testing:** Postman
+* **Charting:** Chart.js
+* **Version Control:** Git & GitHub
 
-## ✨ Key Features
+## 📸 Screenshots
 
-### 🔐 Secure Authentication (JWT)
-* **Stateless Authentication:** Implemented using **JSON Web Tokens (JWT)** for secure API access without session cookies.
-* **Role-Based Protection:** Critical endpoints are protected using Middleware (`auth:api`), ensuring only authorized users can modify data.
+*(Add screenshots of the Admin Dashboard, Meal Tracker, and Charts here)*
 
-### 📡 RESTful API Architecture
-* **CRUD Operations:** Full Create, Read, and Delete capabilities for "Ingredients" data management.
-* **Standardized JSON Responses:** All API responses follow a consistent format (`status`, `message`, `data`) for easy frontend integration.
-* **Input Validation:** Server-side validation to prevent invalid data entry (returns `422 Unprocessable Content`).
+## 📦 Installation Instructions
 
-## 🔌 API Endpoints Reference
-
-| Method | Endpoint | Description | Auth (Token) |
-| :--- | :--- | :--- | :---: |
-| `POST` | `/api/login` | Authenticate admin & retrieve JWT Token | ❌ |
-| `GET` | `/api/ingredients` | Retrieve list of food ingredients | ❌ |
-| `POST` | `/api/ingredients` | Add a new ingredient to database | ✅ |
-| `DELETE` | `/api/ingredients/{id}` | Remove an ingredient by ID | ✅ |
-
-## 🛠️ Installation & Setup
-
-If you want to run this project locally:
-
-1.  **Clone the repository**
+1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/NiMadeMertaDwipayani/NutriGuard.git](https://github.com/NiMadeMertaDwipayani/NutriGuard.git)
+    git clone [https://github.com/your-username/NutriGuard.git](https://github.com/your-username/NutriGuard.git)
+    cd NutriGuard
     ```
+
 2.  **Install Dependencies**
     ```bash
     composer install
+    npm install
     ```
-3.  **Setup Environment**
+
+3.  **Environment Configuration**
+    * Duplicate the `.env.example` file and rename it to `.env`
+    * Configure your database connection in `.env` (DB_DATABASE, DB_USERNAME, etc.)
+
+4.  **Generate Key & Migrate**
     ```bash
-    cp .env.example .env
     php artisan key:generate
-    ```
-4.  **Generate JWT Secret**
-    ```bash
-    php artisan jwt:secret
-    ```
-5.  **Run Migrations**
-    ```bash
     php artisan migrate
     ```
-6.  **Start Server**
+
+5.  **Run the Application**
     ```bash
+    npm run build
     php artisan serve
     ```
 
 ---
-*Developed by **Ni Made Merta Dwipayani** as a mid-exam project and rest API task.*
+**Developed by Ni Made Merta Dwipayani as a mid-exam project, rest API task and Final Exam (UAS) requirement for the Web Technology course.**
+
