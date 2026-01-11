@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\IngredientController;
+use App\Http\Controllers\Api\UasApiController;
 
 // === PINTU UMUM (Bisa diakses siapa saja) ===
 Route::post('/login', [AuthController::class, 'login']);
@@ -15,3 +16,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/ingredients/{id}', [IngredientController::class, 'destroy']); // Hapus Data
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+// Endpoint Publik untuk UAS
+Route::get('/ingredients', [UasApiController::class, 'getIngredients']);
+Route::get('/reports', [UasApiController::class, 'getReports']);
