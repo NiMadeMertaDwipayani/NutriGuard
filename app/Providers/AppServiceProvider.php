@@ -5,7 +5,11 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use App\Models\Ingredient; // Tambahan
+use App\Models\Disease; // <--- Tambahan
+use App\Models\User;    // <--- Tambahan
 use App\Observers\IngredientObserver; // Tambahan
+use App\Observers\DiseaseObserver; // <--- Tambahan
+use App\Observers\UserObserver;    // <--- Tambahan
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,7 +38,9 @@ class AppServiceProvider extends ServiceProvider
             URL::forceRootUrl(config('app.url'));
         }
 
-        // Nyalakan CCTV
-        Ingredient::observe(IngredientObserver::class);
+        Ingredient::observe(IngredientObserver::class); // Nyalakan CCTV
+        Disease::observe(DiseaseObserver::class); // <--- Aktifkan CCTV Penyakit
+        User::observe(UserObserver::class);       // <--- Aktifkan CCTV User
+
     }
 }
