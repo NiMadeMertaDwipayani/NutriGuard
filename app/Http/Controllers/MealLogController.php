@@ -7,13 +7,17 @@ use App\Models\Ingredient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB; // <--- PENTING
 
 class MealLogController extends Controller
 {
     // Menampilkan Halaman Tracker
     public function index()
     {
-        // Ambil data makan HARI INI saja
+
+        $userId = Auth::id(); //tambahan baru
+
+        // --- 1. Ambil data makan HARI INI saja
         $todayMeals = MealLog::where('user_id', Auth::id())
             ->whereDate('consumed_at', Carbon::today())
             ->with('ingredient') // Load relasi biar nama makanannya muncul
@@ -25,7 +29,53 @@ class MealLogController extends Controller
         // Ambil daftar bahan makanan untuk Dropdown input
         $ingredients = Ingredient::all();
 
-        return view('meals.index', compact('todayMeals', 'ingredients', 'totalCaloriesToday'));
+        // --- 2. DATA BARU: Total Nutrisi Hari Ini (Untuk Pie Chart) ---
+        $totalProtein = 0;
+        $totalCarbs = 0;
+        $totalFat = 0;
+
+        foreach ($todayMeals as $meal) {
+            // Rumus: (Gram / 100) * Nutrisi per 100g
+            if($meal->ingredient) { // Cek biar gak error kalau bahan dihapus
+                $totalProtein += ($meal->grams / 100) * $meal->ingredient->protein;
+                $totalCarbs   += ($meal->grams / 100) * $meal->ingredient->carbs;
+                $totalFat     += ($meal->grams / 100) * $meal->ingredient->fat;
+            }
+        }
+
+        // --- 3. DATA BARU: History 7 Hari Terakhir (Untuk Bar Chart) ---
+        $historyData = MealLog::select(
+                DB::raw('DATE(consumed_at) as date'), 
+                DB::raw('SUM(total_calories) as total_cal')
+            )
+            ->where('user_id', $userId)
+            ->where('consumed_at', '>=', Carbon::now()->subDays(6))
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        // Siapkan Array untuk ChartJS (Isi 0 jika tanggal tidak ada data)
+        $chartLabels = [];
+        $chartValues = [];
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $dateObj = Carbon::now()->subDays($i);
+            $dateString = $dateObj->format('Y-m-d');
+            
+            $chartLabels[] = $dateObj->format('d M'); // Label: "12 Jan"
+            
+            // Cari data di tanggal ini
+            $log = $historyData->firstWhere('date', $dateString);
+            $chartValues[] = $log ? $log->total_cal : 0;
+        }
+
+        return view('meals.index', compact(
+            'todayMeals', 
+            'ingredients', 
+            'totalCaloriesToday',
+            'totalProtein', 'totalCarbs', 'totalFat', // Kirim data nutrisi
+            'chartLabels', 'chartValues' // Kirim data grafik
+        ));
     }
 
     // Proses Simpan & Hitung (LOGIKA KOMPLEKS DISINI)
