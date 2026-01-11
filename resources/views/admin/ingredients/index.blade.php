@@ -27,9 +27,14 @@
                                 <th class="py-3 px-6 text-left w-10">No</th>
                                 <th class="py-3 px-6 text-center w-24">Gambar</th>
                                 <th class="py-3 px-6 text-left">Nama Bahan</th>
+                                <th class="py-3 px-6 text-left">Kalori</th>
+                                <th class="py-3 px-6 text-left">Protein</th>
+                                <th class="py-3 px-6 text-left">Karbo</th>
+                                <th class="py-3 px-6 text-left">Lemak</th>
                                 <th class="py-3 px-6 text-center w-32">Aksi</th>
                             </tr>
                         </thead>
+
                         <tbody class="text-sm font-light">
                             @forelse ($ingredients as $index => $item)
                                 <tr class="border-b border-gray-700 hover:bg-gray-700 transition">
@@ -42,6 +47,10 @@
                                         @endif
                                     </td>
                                     <td class="py-3 px-6 font-bold text-white">{{ $item->name }}</td>
+                                    <td class="py-3 px-6 font-bold text-white">{{ $item->calories }} kkal</td>
+                                    <td class="py-3 px-6 font-bold text-white">{{ $item->protein }} g</td>
+                                    <td class="py-3 px-6 font-bold text-white">{{ $item->carbs }} g</td>
+                                    <td class="py-3 px-6 font-bold text-white">{{ $item->fat }} g</td>
                                     <td class="py-3 px-6 text-center">
                                         <div class="flex item-center justify-center gap-2">
                                             <a href="{{ route('admin.ingredients.edit', $item->id) }}" class="text-blue-400 hover:text-blue-300">Edit</a>

@@ -15,6 +15,10 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('meals.index')" :active="request()->routeIs('meals.index')">
+                        {{ __('Meal Tracker') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Cari Makanan') }}
                     </x-nav-link>

@@ -24,33 +24,33 @@ class IngredientController extends Controller
     // 3. SIMPAN DATA ( + GAMBAR )
     public function store(Request $request)
     {
+        // 1. Validasi Input
         $request->validate([
-            'name' => 'required|string|max:255|unique:ingredients,name',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi Gambar
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|max:2048',
             'calories' => 'required|integer|min:0',
             'protein' => 'required|numeric|min:0',
             'carbs' => 'required|numeric|min:0',
             'fat' => 'required|numeric|min:0',
         ]);
 
-        $data = $request->all();
+        // 2. Siapkan data dasar
+        $data = [
+            'name' => $request->name,
+            'calories' => $request->calories,
+            'protein' => $request->protein,
+            'carbs' => $request->carbs,
+            'fat' => $request->fat,
+            'image' => null, // Default null (jika tidak ada gambar)
+        ];
 
-        // Logika Upload Gambar
+        // 3. Logika Gambar (Jika ada upload, isi variable image)
         if ($request->hasFile('image')) {
-            // Simpan ke folder 'ingredients' di public disk
-            $path = $request->file('image')->store('ingredients', 'public');
-            $data['image'] = $path;
+            $data['image'] = $request->file('image')->store('ingredients', 'public');
         }
 
-        // Simpan ke Database (Update bagian ini)
-        Ingredient::create([
-        'name' => $request->name,
-        'image' => $path, // <--- Perhatikan: Disini pakai $path (sesuai variabel di atas)
-        'calories' => $request->calories,
-        'protein' => $request->protein,
-        'carbs' => $request->carbs,
-        'fat' => $request->fat,
-    ]);
+        // 4. Simpan ke Database
+        Ingredient::create($data);
 
         return redirect()->route('admin.ingredients.index')
             ->with('success', 'Bahan Makanan berhasil ditambahkan!');
@@ -65,35 +65,37 @@ class IngredientController extends Controller
     // UPDATE DATA ( + GANTI GAMBAR )
     public function update(Request $request, Ingredient $ingredient)
     {
+        // 1. Validasi Input
         $request->validate([
-            'name' => 'required|string|max:255|unique:ingredients,name,' . $ingredient->id,
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|max:2048',
             'calories' => 'required|integer|min:0',
             'protein' => 'required|numeric|min:0',
             'carbs' => 'required|numeric|min:0',
             'fat' => 'required|numeric|min:0',
         ]);
 
-        $data = $request->all();
-
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($ingredient->image) {
-                Storage::disk('public')->delete($ingredient->image);
-            }
-            // Upload gambar baru
-            $path = $request->file('image')->store('ingredients', 'public');
-            $data['image'] = $path;
-        }
-
-        $ingredient->update([
+        // 2. Siapkan data dasar (selain gambar)
+        $data = [
             'name' => $request->name,
-            'image' => $path, // <--- Perhatikan: Disini pakai $path (sesuai variabel di atas)
             'calories' => $request->calories,
             'protein' => $request->protein,
             'carbs' => $request->carbs,
             'fat' => $request->fat,
-        ]);
+        ];
+
+        // 3. Logika Gambar (Hanya update jika ada file baru)
+        if ($request->hasFile('image')) {
+            // Simpan gambar baru
+            $data['image'] = $request->file('image')->store('ingredients', 'public');
+            
+            // Opsional: Hapus gambar lama agar hemat storage
+            if ($ingredient->image) { Storage::disk('public')->delete($ingredient->image); }
+        }
+
+        // 4. Eksekusi Update
+        // Laravel otomatis hanya mengupdate kolom yang ada di dalam array $data
+        $ingredient->update($data);
 
         return redirect()->route('admin.ingredients.index')
             ->with('success', 'Bahan Makanan berhasil diperbarui!');

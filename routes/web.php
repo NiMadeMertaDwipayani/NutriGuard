@@ -36,6 +36,13 @@ Route::middleware('auth')->group(function () {
     // Rute Hapus Semua
     Route::delete('/my-health/destroy-all', [HealthController::class, 'destroyAll'])->name('health.destroy.all');
 
+    // Route untuk Fitur Meal Tracker (Hanya untuk yang sudah Login)
+    Route::middleware('auth')->group(function () {
+        Route::get('/meals', [App\Http\Controllers\MealLogController::class, 'index'])->name('meals.index');
+        Route::post('/meals', [App\Http\Controllers\MealLogController::class, 'store'])->name('meals.store');
+        Route::delete('/meals/{meal}', [App\Http\Controllers\MealLogController::class, 'destroy'])->name('meals.destroy');
+    });
+
     // AREA KHUSUS ADMIN 
     Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
 
